@@ -1,0 +1,133 @@
+Te voy a compartir una clase llamada Banco, la cual esta compuesta de las clases como Cuenta y Cliente.
+Quiero que generes una clase de pruebas unitarias con JUnit5 para los siguientes métodos: 
+
+public Cuenta crearCuenta(Cliente cliente)
+
+
+
+Descripción:
+Crea una cuenta de tipo Ahorros ("A") con un código único
+Lógica:
+• Convertir ultimoCodigo a String:
+String codigoStr = ultimoCodigo + "";
+• Incrementar ultimoCodigo
+• Crear la cuenta con ese ID
+• Asignar el cliente recibido
+Parámetros:
+• cliente (Cliente)
+Retorna:
+• Cuenta creada
+
+public boolean depositar(double monto, Cuenta cuenta)
+
+Descripción:
+Agrega dinero al saldo de una cuenta.
+Validaciones:
+• El monto debe ser mayor a 0
+Parámetros:
+• monto (double)
+• cuenta (Cuenta)
+Retorna:
+• true → si se realizó el depósito
+• false → si el monto es inválido
+
+
+public boolean retirar(double monto, Cuenta cuenta)
+
+Descripción:
+Retira dinero de una cuenta.
+Validaciones:
+• El monto debe ser mayor a 0
+• El monto no debe superar el saldo disponible
+Parámetros:
+• monto (double)
+• cuenta (Cuenta)
+Retorna:
+• true → si se realizó el retiro
+• false → si no cumple las condiciones
+
+public boolean transferir(double monto, Cuenta origen, Cuenta destino)
+
+Descripción:
+Transfiere dinero entre cuentas.
+Lógica:
+• Retira de la cuenta origen
+• Deposita en la cuenta destino
+Parámetros:
+• origen (Cuenta)
+• destino (Cuenta)
+Retorna:
+• true → si la operación fue exitosa
+• false → si falló
+
+IMPORTANTE PARA TODOS LOS CASOS:
+
+No construyas la prueba basándote en el código interno del método. 
+Construye los casos de prueba basándote en esta descripción funcional.
+
+
+Requisitos: 
+-usa los contructores de la clase
+-construye todos los casos de pruebas importantes
+-incluye comentarios explicando explicito que valida cada caso.
+usa únicamente los constructores, getters y métodos disponibles en la clase.
+-no inventes métodos que no existan.
+-usa assertEquals cuando responda.
+-como se trabaja con valores doublé, usa tolerancia en los asserts.
+-nombra la clase de prueba como testServiciosBancoJUnitIA
+
+aquí la clase:
+
+package com.krakedev.financiero.entidades.servicios;
+
+import com.krakedev.financiero.entidades.Cliente;
+import com.krakedev.financiero.entidades.Cuenta;
+
+public class Banco {
+	//ATRIBUTOS
+	private int ultimoCodigo=1000;
+	//CONSTRUCTORES
+	public Banco() {
+		//VACIO
+	}
+	//METODOS GEY Y SET
+	public int getUltimoCodigo() {
+		return ultimoCodigo;
+	}
+	public void setUltimoCodigo(int ultimoCodigo) {
+		this.ultimoCodigo = ultimoCodigo;
+	}
+	//METODO CREAR CUENTA
+	public Cuenta crearCuenta(Cliente cliente) {
+		String codigoStr=ultimoCodigo+"";
+		ultimoCodigo+=1;
+		Cuenta cuentaNueva=new Cuenta(codigoStr);
+		cuentaNueva.setPropietario(cliente);
+		return cuentaNueva;
+	}
+	//METODO DEPOSITAR
+	public boolean depositar(double monto, Cuenta cuenta) {
+		if(monto>0) {
+			double saldoActual=cuenta.getSaldoActual();
+			cuenta.setSaldoActual(saldoActual+monto);
+			return true;
+		}
+		return false;
+	}
+	//METODO RETIRAR
+	public boolean retirar(double monto, Cuenta cuenta) {
+		if(monto>0 && cuenta.getSaldoActual()>=monto) {
+			double saldoActual=cuenta.getSaldoActual();
+			cuenta.setSaldoActual(saldoActual-monto);
+			return true;
+		}
+		return false;
+	}
+	//METODO TRASFERIR 
+	public boolean transferir(double monto, Cuenta origen, Cuenta destino) {
+		if(monto>0 && origen.getSaldoActual()>=monto && origen.getId()!=destino.getId()) {
+			return retirar(monto, origen) && depositar(monto, destino);			
+		}		
+		return false;
+	}	
+}
